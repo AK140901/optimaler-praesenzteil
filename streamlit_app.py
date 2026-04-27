@@ -171,8 +171,6 @@ Diese Variante basiert auf den acht übergeordneten Clustern und liefert eine sc
 Diese Variante berücksichtigt alle Einzelkriterien innerhalb der Cluster und liefert eine differenziertere Empfehlung.
 """)
 
-st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
-
 mode = st.radio(
     "Welche Variante möchten Sie nutzen?",
     ["Kurze Guideline", "Ausführliche Guideline"],
@@ -192,6 +190,7 @@ if st.session_state.get("started") and mode == "Kurze Guideline":
 
     st.header("⚡ Kurze Guideline")
     st.write("Bitte bewerten Sie, wie stark die folgenden Cluster auf Ihr Team zutreffen.")
+    st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
 
     cluster_answers = {}
     cluster_scores = []
@@ -209,8 +208,8 @@ if st.session_state.get("started") and mode == "Kurze Guideline":
             help="1 = trifft gar nicht zu | 5 = trifft voll zu"
         )
 
-        score = cluster_answers[cluster_name] * weight
-        max_score = 5 * weight
+        score = (cluster_answers[cluster_name] - 1) * weight
+        max_score = 4 * weight
 
         scores.append(score)
         max_scores.append(max_score)
@@ -234,6 +233,7 @@ if st.session_state.get("started") and mode == "Ausführliche Guideline":
 
     st.header("🧭 Ausführliche Guideline")
     st.write("Bitte bewerten Sie die folgenden Aussagen für Ihr Team.")
+    st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
 
     all_answers = {}
     all_scores = []
@@ -260,8 +260,8 @@ if st.session_state.get("started") and mode == "Ausführliche Guideline":
                 )
 
                 weight = empirical_weight(item_data)
-                score = answer * weight
-                max_score = 5 * weight
+                score = (answer - 1) * weight
+                max_score = 4 * weight
 
                 all_answers[key] = answer
                 all_scores.append(score)
