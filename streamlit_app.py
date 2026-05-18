@@ -288,6 +288,7 @@ if st.session_state.get("started"):
                         "Antwort",
                         "Richtung",
                         "Gewichtungsanteil (%)",
+                        "Abweichungsbeitrag",
                         "Scorebeitrag",
                     ]
                 ],
@@ -307,6 +308,7 @@ if st.session_state.get("started"):
                     [
                         "Dimension",
                         "Gewichtungsanteil (%)",
+                        "Abweichungsbeitrag",
                         "Scorebeitrag",
                     ]
                 ],
