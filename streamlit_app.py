@@ -193,6 +193,22 @@ Die Ergebnisse dieser Guideline basieren somit auf einer systematischen wissensc
 Bitte bewerten Sie im nächsten Schritt, inwieweit die folgenden Aussagen auf Ihr Team bzw. Ihre Arbeitssituation zutreffen.
 """)
 
+st.markdown("""
+### Wissenschaftliche Grundlage des Bewertungsmodells
+
+Das Bewertungsmodell basiert auf einer Kombination qualitativer und quantitativer Forschung.
+
+In einer ersten Forschungsphase wurden leitfadengestützte Experteninterviews mit Führungskräften aus der IT-Branche durchgeführt. Ziel war die Identifikation relevanter Einflussfaktoren auf die Gestaltung hybrider Arbeitsmodelle.
+
+In einer zweiten Phase wurden diese Kriterien im Rahmen einer standardisierten Befragung hinsichtlich ihrer:
+- Relevanz für die Bestimmung des Präsenzanteils
+- Abhängigkeit von physischer Präsenz
+
+quantitativ bewertet.
+
+Die empirisch ermittelten Mittelwerte dienen im vorliegenden Modell als Gewichtungsgrundlage. Kriterien mit höherer Relevanz und höherer Präsenzabhängigkeit beeinflussen die spätere Empfehlung somit stärker als weniger relevante Faktoren.
+""")
+
 st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
 
 start = st.button("➡️ Guideline starten")
@@ -202,6 +218,12 @@ if start:
 
 if st.session_state.get("started"):
     st.markdown("---")
+    st.warning("""
+        Die Fragen beziehen sich nicht auf individuelle Präferenzen einzelner Mitarbeitender, 
+        sondern auf die strukturellen Anforderungen des jeweiligen Teams und der Zusammenarbeit.
+
+        Bitte beantworten Sie die Fragen möglichst aus der Perspektive der tatsächlichen Arbeitsanforderungen Ihres Teams.
+    """)
     st.header("🧭 Kontextbasierte Leitfragen")
 
     answers = {}
@@ -236,7 +258,22 @@ if st.session_state.get("started"):
 
         st.progress(max(0, min(100, int(total_score))))
         st.caption(f"Gesamtscore: {round(total_score, 1)} von 100 Punkten")
+        st.info("""
+        Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
 
+        Ein Wert von 50 Punkten entspricht einem theoretischen Gleichgewicht zwischen präsenzfördernden und remote-fördernden Faktoren. 
+        Werte oberhalb von 50 sprechen tendenziell für einen höheren Präsenzanteil, während niedrigere Werte auf eine stärkere Eignung für ortsunabhängiges Arbeiten hinweisen.
+        """)
+
+        st.markdown("""
+        ### Interpretation der Einflussfaktoren
+
+        Die folgenden Dimensionen haben den größten Einfluss auf die berechnete Empfehlung ausgeübt.
+
+        Dabei bedeutet:
+        - positiver Beitrag = spricht eher für mehr Präsenz
+        - negativer Beitrag = spricht eher für mehr Remote-Arbeit
+        """)
         st.subheader("Zentrale Treiber der Empfehlung")
 
         top_dimensions = dimension_df.sort_values(
@@ -278,6 +315,24 @@ if st.session_state.get("started"):
             st.write("Es wurden keine relevanten präsenzreduzierenden Faktoren identifiziert.")
 
         with st.expander("Details zur Berechnung anzeigen"):
+            st.markdown("""
+            ### Erläuterung der Berechnungslogik
+
+            Die Berechnung basiert auf einem gewichteten Bewertungsmodell.
+
+            Jede Leitfrage ist mit empirisch gewichteten Kriterien verknüpft. 
+            Die Gewichtung ergibt sich aus:
+            - der Relevanz des Kriteriums
+            - der empirisch erhobenen Präsenzabhängigkeit
+
+            Je höher beide Werte ausfallen, desto stärker beeinflusst das jeweilige Kriterium die Gesamtempfehlung.
+
+            Die Antworten werden anschließend relativ zu einem neutralen Mittelpunkt von 3 interpretiert:
+            - Werte oberhalb von 3 verstärken die jeweilige Wirkungsrichtung
+            - Werte unterhalb von 3 schwächen diese ab
+
+            Remote-fördernde Faktoren werden dabei invers berücksichtigt.
+            """)
             st.write("Die Tabelle zeigt die Berechnung je Leitfrage.")
 
             st.dataframe(
@@ -320,3 +375,20 @@ if st.session_state.get("started"):
                 f"Summe Gewichtungsanteile: {round(dimension_df['Gewichtungsanteil (%)'].sum(), 1)} % | "
                 f"Summe Scorebeiträge: {round(dimension_df['Scorebeitrag'].sum(), 1)} Punkte"
             )
+            st.markdown("""
+            ### Hinweise zur Interpretation
+
+            Das Bewertungsmodell dient als strukturierte Entscheidungshilfe und nicht als starre Vorgabe.
+
+            Die finale Ausgestaltung hybrider Arbeitsmodelle sollte zusätzlich unternehmensspezifische Rahmenbedingungen berücksichtigen, beispielsweise:
+            - organisatorische Anforderungen
+            - Unternehmenskultur
+            - technologische Infrastruktur
+            - individuelle Teamkonstellationen
+            - strategische Zielsetzungen
+            """)
+st.markdown("---")
+
+st.caption("""
+Hinweis: Das Bewertungsmodell wurde im Rahmen einer wissenschaftlichen Masterarbeit entwickelt und dient ausschließlich als unterstützendes Entscheidungsinstrument für hybride Arbeitsmodelle.
+""")       
