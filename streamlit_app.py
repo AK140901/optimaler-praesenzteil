@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 st.set_page_config(
-    page_title="Guideline Präsenzanteil",
+    page_title="Bewertungsmodell Präsenzanteil",
     page_icon="📊",
     layout="wide"
 )
@@ -175,18 +175,18 @@ def model_from_score(score):
             "description": "Ein hoher Präsenzanteil ist sinnvoll, da die Team- und Arbeitsstruktur stark auf persönliche Zusammenarbeit angewiesen ist."
         }
 
-st.title("📊 Guideline zur Bestimmung des optimalen Präsenzanteils")
+st.title("📊 Bewertungsmodell zur Bestimmung des optimalen Präsenzanteils")
 
 st.markdown("""
-### Hintergrund und Ziel der Guideline
+### Hintergrund und Ziel des Bewertungsmodells
 
-Diese Guideline wurde im Rahmen einer wissenschaftlichen Masterarbeit entwickelt. Ziel ist es, Führungskräfte bei der Bestimmung eines geeigneten Verhältnisses von Präsenz- und Remote-Arbeit in hybriden Arbeitsmodellen zu unterstützen.
+Dieses Bewertungsmodell wurde im Rahmen einer wissenschaftlichen Masterarbeit entwickelt. Ziel ist es, Führungskräfte bei der Bestimmung eines geeigneten Verhältnisses von Präsenz- und Remote-Arbeit in hybriden Arbeitsmodellen zu unterstützen.
 
 Die Grundlage bilden qualitative Interviews mit Führungskräften aus der IT-Branche. Aus diesen Interviews wurden zentrale Einflussfaktoren auf den Präsenzanteil abgeleitet. Anschließend wurden diese Faktoren im Rahmen einer quantitativen Erhebung bewertet und empirisch gewichtet.
 
 Auf Basis dieser Ergebnisse wurde ein Entscheidungsmodell entwickelt, das die individuelle Situation eines Teams berücksichtigt und daraus eine Empfehlung für den Präsenzanteil ableitet.
 
-Die Ergebnisse dieser Guideline basieren somit auf einer systematischen wissenschaftlichen Analyse und sind vollständig in der zugrunde liegenden Masterarbeit dokumentiert.
+Die Ergebnisse dieses Bewertungsmodells basieren somit auf einer systematischen wissenschaftlichen Analyse und sind vollständig in der zugrunde liegenden Masterarbeit dokumentiert.
 
 ### Nutzung
 
@@ -211,7 +211,7 @@ Die empirisch ermittelten Mittelwerte dienen im vorliegenden Modell als Gewichtu
 
 st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
 
-start = st.button("➡️ Guideline starten")
+start = st.button("➡️ Fragebogen starten")
 
 if start:
     st.session_state["started"] = True
@@ -250,7 +250,7 @@ if st.session_state.get("started"):
         total_score, question_df, dimension_df = calculate_scores(answers)
         result = model_from_score(total_score)
 
-        st.header("📊 Ergebnis der Guideline")
+        st.header("📊 Ergebnis des Bewertungsmodells")
 
         st.success(f"Empfohlenes Arbeitsmodell: **{result['model']}**")
         st.subheader(f"Empfohlener Präsenzanteil: {result['days']}")
