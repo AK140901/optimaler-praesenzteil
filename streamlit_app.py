@@ -388,6 +388,21 @@ if st.session_state.get("started"):
             z-index: 9999;
             box-shadow: 0 4px 14px rgba(0,0,0,0.25);
         }
+        .model-card {
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(128, 128, 128, 0.25);
+            background-color: rgba(128, 128, 128, 0.08);
+            min-height: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+
+            margin-bottom: 12px;
+        }
         </style>
         """, unsafe_allow_html=True)
 
