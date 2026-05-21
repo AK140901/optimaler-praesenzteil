@@ -419,19 +419,26 @@ if st.session_state.get("started"):
         /* Alle Info-Icons standardmäßig unsichtbar */
         .info-icon {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 24px;
-            height: 24px;
+            top: 10px;
+            right: 10px;
+
+            width: 18px;
+            height: 18px;
+
             border-radius: 50%;
-            border: 1px solid rgba(128, 128, 128, 0.35);
+            border: 1px solid rgba(151, 166, 195, 0.35);
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
+
+            font-size: 11px;
+            font-weight: 600;
+
+            color: rgba(250, 250, 250, 0.75);
+            background-color: rgba(255,255,255,0.04);
+
             cursor: help;
-            background-color: rgba(255,255,255,0.03);
             z-index: 2;
 
             opacity: 0;
@@ -492,7 +499,7 @@ if st.session_state.get("started"):
 
             html = (
                 f'<div class="{card_class}">'
-                f'<div class="info-icon" data-tooltip="{tooltip}">i</div>'
+                f'<div class="info-icon" data-tooltip="{tooltip}">?</div>'
                 f'{badge_html}'
                 f'<div class="model-title">{model_name}</div>'
                 f'<div class="model-days">{days}</div>'
