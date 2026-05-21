@@ -259,12 +259,53 @@ if st.session_state.get("started"):
 
         st.header("📊 Ergebnis des Bewertungsmodells")
 
-        st.success(f"Empfohlenes Arbeitsmodell: **{result['model']}**")
-        st.subheader(f"Empfohlener Präsenzanteil: {result['days']}")
-        st.write(result["description"])
+        score_rounded = round(total_score, 1)
+
+        st.markdown(
+            f"""
+            <div style="
+                padding: 28px;
+                border-radius: 18px;
+                background-color: #f5f7fa;
+                border: 1px solid #e1e5ea;
+                text-align: center;
+                margin-bottom: 24px;
+            ">
+                <div style="font-size: 18px; color: #555;">
+                    Ihr berechneter Präsenz-Score
+                </div>
+                <div style="font-size: 56px; font-weight: 700; color: #1f2937;">
+                    {score_rounded}
+                </div>
+                <div style="font-size: 16px; color: #555;">
+                    von 100 Punkten
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         st.progress(max(0, min(100, int(total_score))))
-        st.caption(f"Gesamtscore: {round(total_score, 1)} von 100 Punkten")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.markdown("### 🧭 Einordnung")
+            st.success(f"**{result['model']}**")
+
+        with col2:
+            st.markdown("### 🏢 Empfohlener Präsenzanteil")
+            st.info(f"**{result['days']}**")
+
+        st.markdown("### Interpretation")
+        st.write(result["description"])
+
+        st.info("""
+        Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
+
+        Ein Wert von 50 Punkten entspricht einem theoretischen Gleichgewicht zwischen präsenzfördernden und remote-fördernden Faktoren. 
+        Werte oberhalb von 50 sprechen tendenziell für einen höheren Präsenzanteil, während niedrigere Werte auf eine stärkere Eignung für ortsunabhängiges Arbeiten hinweisen.
+        """)
         st.info("""
         Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
 
