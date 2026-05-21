@@ -63,36 +63,43 @@ questions = {
     "q2": {"dimension": "Aufgaben und Tätigkeiten", "text": "Wie häufig erfordert die Arbeit Ihres Teams kreative oder kollaborative Problemlösungen?", "direction": "presence", "criteria": ["k3"]},
     "q3": {"dimension": "Aufgaben und Tätigkeiten", "text": "Wie stark basiert die Arbeit Ihres Teams auf konzentrierter und individuell ausführbarer Einzelarbeit?", "direction": "remote", "criteria": ["k4"]},
     "q4": {"dimension": "Aufgaben und Tätigkeiten", "text": "Wie häufig befindet sich Ihr Team in Projektphasen mit erhöhtem Abstimmungs- und Koordinationsbedarf?", "direction": "presence", "criteria": ["k5"]},
+
     "q5": {"dimension": "Wissensaustausch und Lernen", "text": "Wie wichtig ist spontaner und informeller Wissensaustausch für die tägliche Zusammenarbeit Ihres Teams?", "direction": "presence", "criteria": ["k6", "k7"]},
     "q6": {"dimension": "Wissensaustausch und Lernen", "text": "Wie stark basiert die Arbeit Ihres Teams auf Erfahrungswissen und gemeinsamem Lernen?", "direction": "presence", "criteria": ["k8", "k10"]},
     "q7": {"dimension": "Wissensaustausch und Lernen", "text": "Wie häufig werden neue Mitarbeitende in Ihr Team integriert oder eingearbeitet?", "direction": "presence", "criteria": ["k9"]},
-    "q8": {"dimension": "Kommunikation und Abstimmung", "text": "Wie wichtig sind direkte und schnelle Abstimmungen für die Arbeitsfähigkeit Ihres Teams?", "direction": "presence", "criteria": ["k11", "k13"]},
-    "q9": {"dimension": "Kommunikation und Abstimmung", "text": "Wie häufig müssen in Ihrem Team komplexe Sachverhalte gemeinsam geklärt werden?", "direction": "presence", "criteria": ["k14"]},
-    "q10": {"dimension": "Kommunikation und Abstimmung", "text": "Wie wichtig ist die Vermeidung von Missverständnissen und Kommunikationsfehlern in Ihrem Arbeitsalltag?", "direction": "presence", "criteria": ["k12"]},
-    "q11": {"dimension": "Kommunikation und Abstimmung", "text": "Wie relevant sind persönliche und situationsbezogene Feedbackprozesse in Ihrem Team?", "direction": "presence", "criteria": ["k15"]},
-    "q12": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie wichtig sind persönlicher Kontakt und soziale Interaktion für den Zusammenhalt Ihres Teams?", "direction": "presence", "criteria": ["k16", "k19"]},
-    "q13": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie stark basiert die Zusammenarbeit Ihres Teams auf gegenseitigem Vertrauen und persönlichen Beziehungen?", "direction": "presence", "criteria": ["k17", "k18"]},
-    "q14": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie wichtig ist die soziale Integration neuer Mitarbeitender für die Stabilität Ihres Teams?", "direction": "presence", "criteria": ["k20"]},
-    "q15": {"dimension": "Mitarbeitendenbezogene Faktoren", "text": "Wie hoch ist das Bedürfnis Ihrer Mitarbeitenden nach räumlicher Flexibilität und individueller Arbeitsgestaltung?", "direction": "remote", "criteria": ["k21", "k22"]},
-    "q16": {"dimension": "Mitarbeitendenbezogene Faktoren", "text": "Welche Bedeutung haben hybride Arbeitsmöglichkeiten für Zufriedenheit und Motivation Ihrer Mitarbeitenden?", "direction": "remote", "criteria": ["k23", "k24", "k25"]},
-    "q17": {"dimension": "Führung", "text": "Wie stark basiert Ihre Führungsarbeit auf persönlichem Austausch und unmittelbarer Interaktion mit dem Team?", "direction": "presence", "criteria": ["k29", "k30"]},
-    "q18": {"dimension": "Führung", "text": "Wie wichtig ist direkte Präsenz für die Steuerung und Koordination Ihres Teams?", "direction": "presence", "criteria": ["k26", "k27", "k28"]},
+
+    "q8": {"dimension": "Teamstruktur und Reifegrad", "text": "Wie eingespielt und erfahren ist Ihr Team in der Zusammenarbeit?", "direction": "remote", "criteria": ["k36", "k37"]},
+    "q9": {"dimension": "Teamstruktur und Reifegrad", "text": "Wie selbstorganisiert und strukturell stabil arbeitet Ihr Team?", "direction": "remote", "criteria": ["k38", "k39"]},
+
+    "q10": {"dimension": "Kommunikation und Abstimmung", "text": "Wie wichtig sind direkte und schnelle Abstimmungen für die Arbeitsfähigkeit Ihres Teams?", "direction": "presence", "criteria": ["k11", "k13"]},
+    "q11": {"dimension": "Kommunikation und Abstimmung", "text": "Wie häufig müssen in Ihrem Team komplexe Sachverhalte gemeinsam geklärt werden?", "direction": "presence", "criteria": ["k14"]},
+    "q12": {"dimension": "Kommunikation und Abstimmung", "text": "Wie wichtig ist die Vermeidung von Missverständnissen und Kommunikationsfehlern in Ihrem Arbeitsalltag?", "direction": "presence", "criteria": ["k12"]},
+    "q13": {"dimension": "Kommunikation und Abstimmung", "text": "Wie relevant sind persönliche und situationsbezogene Feedbackprozesse in Ihrem Team?", "direction": "presence", "criteria": ["k15"]},
+
+    "q14": {"dimension": "Mitarbeitendenbezogene Faktoren", "text": "Wie hoch ist das Bedürfnis Ihrer Mitarbeitenden nach räumlicher Flexibilität und individueller Arbeitsgestaltung?", "direction": "remote", "criteria": ["k21", "k22"]},
+    "q15": {"dimension": "Mitarbeitendenbezogene Faktoren", "text": "Welche Bedeutung haben hybride Arbeitsmöglichkeiten für Zufriedenheit und Motivation Ihrer Mitarbeitenden?", "direction": "remote", "criteria": ["k23", "k24", "k25"]},
+
+    "q16": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie wichtig sind persönlicher Kontakt und soziale Interaktion für den Zusammenhalt Ihres Teams?", "direction": "presence", "criteria": ["k16", "k19"]},
+    "q17": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie stark basiert die Zusammenarbeit Ihres Teams auf gegenseitigem Vertrauen und persönlichen Beziehungen?", "direction": "presence", "criteria": ["k17", "k18"]},
+    "q18": {"dimension": "Teamdynamik und soziale Einbindung", "text": "Wie wichtig ist die soziale Integration neuer Mitarbeitender für die Stabilität Ihres Teams?", "direction": "presence", "criteria": ["k20"]},
+
     "q19": {"dimension": "Effizienz und Produktivität", "text": "Wie stark profitiert die Produktivität Ihres Teams von ruhigen und störungsarmen Arbeitsbedingungen?", "direction": "remote", "criteria": ["k31", "k33"]},
     "q20": {"dimension": "Effizienz und Produktivität", "text": "Wie effizient funktioniert die Zusammenarbeit Ihres Teams im Remote-Kontext?", "direction": "remote", "criteria": ["k32", "k34"]},
     "q21": {"dimension": "Effizienz und Produktivität", "text": "Wie stark erfolgt die Leistungsbewertung in Ihrem Team primär ergebnisorientiert?", "direction": "remote", "criteria": ["k35"]},
-    "q22": {"dimension": "Teamstruktur und Reifegrad", "text": "Wie eingespielt und erfahren ist Ihr Team in der Zusammenarbeit?", "direction": "remote", "criteria": ["k36", "k37"]},
-    "q23": {"dimension": "Teamstruktur und Reifegrad", "text": "Wie selbstorganisiert und strukturell stabil arbeitet Ihr Team?", "direction": "remote", "criteria": ["k38", "k39"]},
+
+    "q22": {"dimension": "Führung", "text": "Wie stark basiert Ihre Führungsarbeit auf persönlichem Austausch und unmittelbarer Interaktion mit dem Team?", "direction": "presence", "criteria": ["k29", "k30"]},
+    "q23": {"dimension": "Führung", "text": "Wie wichtig ist direkte Präsenz für die Steuerung und Koordination Ihres Teams?", "direction": "presence", "criteria": ["k26", "k27", "k28"]},
 }
 
 dimensions = {
     "Aufgaben und Tätigkeiten": ["q1", "q2", "q3", "q4"],
     "Wissensaustausch und Lernen": ["q5", "q6", "q7"],
-    "Kommunikation und Abstimmung": ["q8", "q9", "q10", "q11"],
-    "Teamdynamik und soziale Einbindung": ["q12", "q13", "q14"],
-    "Mitarbeitendenbezogene Faktoren": ["q15", "q16"],
-    "Führung": ["q17", "q18"],
+    "Teamstruktur und Reifegrad": ["q8", "q9"],
+    "Kommunikation und Abstimmung": ["q10", "q11", "q12", "q13"],
+    "Mitarbeitendenbezogene Faktoren": ["q14", "q15"],
+    "Teamdynamik und soziale Einbindung": ["q16", "q17", "q18"],
     "Effizienz und Produktivität": ["q19", "q20", "q21"],
-    "Teamstruktur und Reifegrad": ["q22", "q23"],
+    "Führung": ["q22", "q23"],
 }
 
 def criterion_weight(key):
@@ -182,6 +189,82 @@ def model_from_score(score):
             "description": "Ein hoher Präsenzanteil ist sinnvoll, da die Team- und Arbeitsstruktur stark auf persönliche Zusammenarbeit angewiesen ist."
         }
 
+def generate_interpretation(total_score, result, dimension_df):
+    score = round(total_score, 1)
+
+    positive_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] > 0].sort_values(
+        by="Abweichungsbeitrag",
+        ascending=False
+    )
+
+    negative_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] < 0].sort_values(
+        by="Abweichungsbeitrag",
+        ascending=True
+    )
+
+    strongest_positive = positive_dimensions.head(2)["Dimension"].tolist()
+    strongest_negative = negative_dimensions.head(2)["Dimension"].tolist()
+
+    dimension_texts_positive = {
+        "Aufgaben und Tätigkeiten": "Die arbeitsbezogenen Anforderungen sprechen in diesem Fall eher für persönliche Abstimmung und koordinierte Zusammenarbeit.",
+        "Wissensaustausch und Lernen": "Der Wissensaustausch wirkt präsenzfördernd, da informelles Lernen und Erfahrungswissen nach den empirischen Ergebnissen stärker von persönlicher Interaktion profitieren.",
+        "Kommunikation und Abstimmung": "Die Kommunikationsanforderungen deuten darauf hin, dass direkte Abstimmungen und die Klärung komplexer Sachverhalte eine relevante Rolle spielen.",
+        "Teamdynamik und soziale Einbindung": "Die Teamdynamik stellt einen zentralen Präsenztreiber dar, da soziale Einbindung, Vertrauen und Zugehörigkeit in der Befragung besonders stark mit Präsenz verbunden wurden.",
+        "Mitarbeitendenbezogene Faktoren": "Die mitarbeitendenbezogenen Faktoren erhöhen in diesem Fall den Präsenzbedarf, was auf eine stärkere Bedeutung gemeinsamer Arbeitsgestaltung hinweisen kann.",
+        "Führung": "Die Führungsdimension spricht eher für Präsenz, wenn persönlicher Austausch und unmittelbare Interaktion für die Führungsarbeit wichtig sind.",
+        "Effizienz und Produktivität": "Die produktivitätsbezogenen Faktoren wirken in diesem Fall präsenzfördernd, wenn Zusammenarbeit oder Produktivität stärker von gemeinsamen Arbeitsbedingungen profitieren.",
+        "Teamstruktur und Reifegrad": "Die Teamstruktur spricht eher für Präsenz, wenn Erfahrung, Eingespieltheit oder Selbstorganisation noch nicht ausreichend ausgeprägt sind."
+    }
+
+    dimension_texts_negative = {
+        "Aufgaben und Tätigkeiten": "Die Aufgabenstruktur wirkt präsenzreduzierend, wenn ein hoher Anteil konzentrierter Einzelarbeit vorliegt.",
+        "Wissensaustausch und Lernen": "Der Wissensaustausch wirkt in diesem Fall weniger präsenzabhängig, wenn Lernen und Erfahrungsweitergabe auch digital gut funktionieren.",
+        "Kommunikation und Abstimmung": "Die Kommunikation scheint auch ohne hohe Präsenzanteile gut abbildbar zu sein, sofern Abstimmungen und Klärungen digital ausreichend funktionieren.",
+        "Teamdynamik und soziale Einbindung": "Die Teamdynamik reduziert den Präsenzbedarf, wenn Vertrauen, Beziehungen und Zugehörigkeit bereits stabil ausgeprägt sind.",
+        "Mitarbeitendenbezogene Faktoren": "Die mitarbeitendenbezogenen Faktoren sprechen eher für mehr Flexibilität, da individuelle Arbeitsortpräferenzen, Zufriedenheit und Vereinbarkeit von Beruf und Privatleben empirisch eine hohe Relevanz, aber geringere Präsenzabhängigkeit aufweisen.",
+        "Führung": "Die Führungsdimension wirkt präsenzreduzierend, wenn Steuerung, Unterstützung und Austausch auch ohne regelmäßige physische Anwesenheit wirksam umgesetzt werden können.",
+        "Effizienz und Produktivität": "Die Dimension Effizienz und Produktivität spricht eher für Remote-Arbeit, wenn ruhige Arbeitsbedingungen, Ergebnisorientierung und effiziente Remote-Zusammenarbeit stark ausgeprägt sind.",
+        "Teamstruktur und Reifegrad": "Ein hoher Reifegrad des Teams reduziert den Präsenzbedarf, da eingespielte, erfahrene und selbstorganisierte Teams weniger stark auf physische Anwesenheit angewiesen sind."
+    }
+
+    interpretation = []
+
+    interpretation.append(
+        f"Der berechnete Präsenz-Score beträgt {score} von 100 Punkten und wird dem Arbeitsmodell "
+        f"„{result['model']}“ zugeordnet. Dies entspricht einem empfohlenen Präsenzanteil von {result['days']}."
+    )
+
+    if total_score > 55:
+        interpretation.append(
+            "Das Ergebnis liegt oberhalb des neutralen Mittelpunktes von 50 Punkten und spricht damit tendenziell für einen höheren Präsenzanteil. "
+            "Die Empfehlung sollte jedoch nicht als starre Vorgabe verstanden werden, sondern als empirisch fundierte Orientierung für die konkrete Team- und Arbeitssituation."
+        )
+    elif total_score < 45:
+        interpretation.append(
+            "Das Ergebnis liegt unterhalb des neutralen Mittelpunktes von 50 Punkten und deutet damit auf eine stärkere Eignung für remote-orientierte oder flexible hybride Arbeitsformen hin. "
+            "Der Präsenzanteil sollte in diesem Fall eher gezielt für bestimmte Anlässe eingesetzt werden."
+        )
+    else:
+        interpretation.append(
+            "Das Ergebnis liegt nahe am neutralen Mittelpunkt von 50 Punkten. Dies deutet darauf hin, dass sich präsenzfördernde und remote-fördernde Faktoren weitgehend ausgleichen. "
+            "Für die praktische Umsetzung erscheint daher ein flexibles hybrides Modell besonders naheliegend."
+        )
+
+    if strongest_positive:
+        pos_sentences = [dimension_texts_positive[d] for d in strongest_positive if d in dimension_texts_positive]
+        interpretation.append("Präsenzfördernd wirken vor allem die Dimensionen " + ", ".join(strongest_positive) + ". " + " ".join(pos_sentences))
+
+    if strongest_negative:
+        neg_sentences = [dimension_texts_negative[d] for d in strongest_negative if d in dimension_texts_negative]
+        interpretation.append("Präsenzreduzierend wirken insbesondere die Dimensionen " + ", ".join(strongest_negative) + ". " + " ".join(neg_sentences))
+
+    interpretation.append(
+        "Die Interpretation berücksichtigt dabei die empirischen Ergebnisse der Befragung: Besonders soziale Integration, Teamdynamik, informeller Wissensaustausch und Onboarding wurden stärker mit physischer Präsenz verbunden. "
+        "Dagegen wurden Flexibilität, konzentrierte Einzelarbeit, Selbstorganisation und Ergebnisorientierung eher als Faktoren eingeordnet, die remote-fähige Arbeitsformen begünstigen."
+    )
+
+    return "\n\n".join(interpretation)        
+
 st.title("📊 Bewertungsmodell zur Bestimmung des optimalen Präsenzanteils")
 
 st.markdown("""
@@ -201,19 +284,11 @@ Bitte bewerten Sie im nächsten Schritt, inwieweit die folgenden Aussagen auf Ih
 """)
 
 st.markdown("""
-### Wissenschaftliche Grundlage des Bewertungsmodells
+### Wissenschaftliche Grundlage
 
-Das Bewertungsmodell basiert auf einer Kombination qualitativer und quantitativer Forschung.
+Das Bewertungsmodell basiert auf qualitativen Interviews mit IT-Führungskräften sowie einer anschließenden quantitativen Gewichtungsbefragung.
 
-In einer ersten Forschungsphase wurden leitfadengestützte Experteninterviews mit Führungskräften aus der IT-Branche durchgeführt. Ziel war die Identifikation relevanter Einflussfaktoren auf die Gestaltung hybrider Arbeitsmodelle.
-
-In einer zweiten Phase wurden diese Kriterien im Rahmen einer standardisierten Befragung hinsichtlich ihrer:
-- Relevanz für die Bestimmung des Präsenzanteils
-- Abhängigkeit von physischer Präsenz
-
-quantitativ bewertet.
-
-Die empirisch ermittelten Mittelwerte dienen im vorliegenden Modell als Gewichtungsgrundlage. Kriterien mit höherer Relevanz und höherer Präsenzabhängigkeit beeinflussen die spätere Empfehlung somit stärker als weniger relevante Faktoren.
+Die identifizierten Kriterien wurden hinsichtlich ihrer Relevanz und Präsenzabhängigkeit bewertet. Diese empirischen Mittelwerte bilden die Grundlage der Gewichtung im Modell.
 """)
 
 st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
@@ -226,10 +301,7 @@ if start:
 if st.session_state.get("started"):
     st.markdown("---")
     st.warning("""
-        Die Fragen beziehen sich nicht auf individuelle Präferenzen einzelner Mitarbeitender, 
-        sondern auf die strukturellen Anforderungen des jeweiligen Teams und der Zusammenarbeit.
-
-        Bitte beantworten Sie die Fragen möglichst aus der Perspektive der tatsächlichen Arbeitsanforderungen Ihres Teams.
+    Bitte beantworten Sie die Fragen aus Sicht der strukturellen Anforderungen Ihres Teams und nicht aus Sicht einzelner persönlicher Präferenzen.
     """)
     st.header("🧭 Kontextbasierte Leitfragen")
 
@@ -287,7 +359,7 @@ if st.session_state.get("started"):
         )
 
         st.progress(int(progress_value))
-        st.caption(f"Scoreposition auf der Skala: {score_rounded} / 100 Punkte")
+        st.caption(f"Score: {score_rounded} / 100 Punkte")
 
         st.markdown("### Einordnung des Ergebnisses")
 
@@ -403,6 +475,10 @@ if st.session_state.get("started"):
 
             margin-bottom: 12px;
         }
+        .model-card.model-card-selected {
+            border: 2px solid #22c55e !important;
+            background-color: rgba(34, 197, 94, 0.12) !important;
+        }
         </style>
         """, unsafe_allow_html=True)
 
@@ -426,25 +502,22 @@ if st.session_state.get("started"):
             with col:
                 st.markdown(html, unsafe_allow_html=True)
 
-        st.markdown("### Interpretation")
-        st.write(result["description"])
+        st.markdown("### Interpretation des Ergebnisses")
+
+        interpretation_text = generate_interpretation(total_score, result, dimension_df)
+
+        st.markdown(interpretation_text)
 
         st.info("""
-        Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
-
-        Ein Wert von 50 Punkten entspricht einem theoretischen Gleichgewicht zwischen präsenzfördernden und remote-fördernden Faktoren. 
-        Werte oberhalb von 50 sprechen tendenziell für einen höheren Präsenzanteil, während niedrigere Werte auf eine stärkere Eignung für ortsunabhängiges Arbeiten hinweisen.
+        Hinweis: Das Ergebnis dient als Orientierungshilfe und ersetzt keine unternehmens- oder teamspezifische Entscheidung.
         """)
+
+        st.markdown("### Wichtigste Einflussdimensionen")
 
         st.markdown("""
-        ### Interpretation der Einflussfaktoren
-
-        Die folgenden Dimensionen haben den größten Einfluss auf die berechnete Empfehlung ausgeübt.
-
-        Dabei bedeutet:
-        - positiver Beitrag = spricht eher für mehr Präsenz
-        - negativer Beitrag = spricht eher für mehr Remote-Arbeit
+        Die folgenden Dimensionen zeigen, welche Bereiche den Score am stärksten erhöht oder reduziert haben.
         """)
+    
         st.subheader("Zentrale Treiber der Empfehlung")
 
         top_dimensions = dimension_df.sort_values(
