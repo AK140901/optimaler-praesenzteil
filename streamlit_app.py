@@ -260,24 +260,25 @@ if st.session_state.get("started"):
         st.header("📊 Ergebnis des Bewertungsmodells")
 
         score_rounded = round(total_score, 1)
+        progress_value = max(0, min(100, total_score))
 
         st.markdown(
             f"""
             <div style="
                 padding: 28px;
                 border-radius: 18px;
-                background-color: #f5f7fa;
-                border: 1px solid #e1e5ea;
+                background-color: rgba(128, 128, 128, 0.08);
+                border: 1px solid rgba(128, 128, 128, 0.25);
                 text-align: center;
-                margin-bottom: 24px;
+                margin-bottom: 20px;
             ">
-                <div style="font-size: 18px; color: #555;">
+                <div style="font-size: 18px;">
                     Ihr berechneter Präsenz-Score
                 </div>
-                <div style="font-size: 56px; font-weight: 700; color: #1f2937;">
+                <div style="font-size: 58px; font-weight: 700;">
                     {score_rounded}
                 </div>
-                <div style="font-size: 16px; color: #555;">
+                <div style="font-size: 16px;">
                     von 100 Punkten
                 </div>
             </div>
@@ -285,27 +286,134 @@ if st.session_state.get("started"):
             unsafe_allow_html=True
         )
 
-        st.progress(max(0, min(100, int(total_score))))
+        st.progress(int(progress_value))
+        st.caption(f"Scoreposition auf der Skala: {score_rounded} / 100 Punkte")
 
-        col1, col2 = st.columns(2)
+        st.markdown("### Einordnung des Ergebnisses")
 
-        with col1:
-            st.markdown("### 🧭 Einordnung")
-            st.success(f"**{result['model']}**")
+        model_options = [
+            ("Remote-first", "≤ 1 Präsenztag pro Woche", "Empfohlen bei einem Score von 0 bis 25 Punkten"),
+            ("Hybrid-flexibel", "1–2 Präsenztage pro Woche", "Empfohlen bei einem Score von 26 bis 50 Punkten"),
+            ("Hybrid-präsenzorientiert", "2–3 Präsenztage pro Woche", "Empfohlen bei einem Score von 51 bis 75 Punkten"),
+            ("Präsenz-first", "4–5 Präsenztage pro Woche", "Empfohlen bei einem Score von 76 bis 100 Punkten"),
+        ]
 
-        with col2:
-            st.markdown("### 🏢 Empfohlener Präsenzanteil")
-            st.info(f"**{result['days']}**")
+        st.markdown("""
+        <style>
+        .model-card {
+            position: relative;
+            padding: 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(128, 128, 128, 0.25);
+            background-color: rgba(128, 128, 128, 0.08);
+            min-height: 150px;
+            height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .model-card-selected {
+            border: 2px solid #22c55e;
+            background-color: rgba(34, 197, 94, 0.12);
+        }
+
+        .model-badge {
+            display: inline-block;
+            margin-bottom: 8px;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background-color: rgba(34, 197, 94, 0.18);
+            color: #22c55e;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .model-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.25;
+        }
+
+        .model-days {
+            font-size: 15px;
+            line-height: 1.35;
+            opacity: 0.85;
+        }
+
+        /* Alle Info-Icons standardmäßig unsichtbar */
+        .info-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid rgba(128, 128, 128, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: help;
+            background-color: rgba(255,255,255,0.03);
+            z-index: 2;
+
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        /* Erst sichtbar wenn man über die Box hovert */
+        .model-card:hover .info-icon {
+            opacity: 0.8;
+        }
+
+        .info-icon:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 32px;
+            right: 0;
+            width: 220px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background-color: #262730;
+            color: white;
+            font-size: 13px;
+            font-weight: 400;
+            line-height: 1.35;
+            text-align: left;
+            z-index: 9999;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        </style>
+        """, unsafe_allow_html=True)
+
+        cols = st.columns(4)
+
+        for col, (model_name, days, tooltip) in zip(cols, model_options):
+            is_selected = model_name == result["model"]
+
+            card_class = "model-card model-card-selected" if is_selected else "model-card"
+            badge_html = '<div class="model-badge">Empfohlen</div>' if is_selected else ""
+
+            html = (
+                f'<div class="{card_class}">'
+                f'<div class="info-icon" data-tooltip="{tooltip}">i</div>'
+                f'{badge_html}'
+                f'<div class="model-title">{model_name}</div>'
+                f'<div class="model-days">{days}</div>'
+                f'</div>'
+            )
+
+            with col:
+                st.markdown(html, unsafe_allow_html=True)
 
         st.markdown("### Interpretation")
         st.write(result["description"])
 
-        st.info("""
-        Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
-
-        Ein Wert von 50 Punkten entspricht einem theoretischen Gleichgewicht zwischen präsenzfördernden und remote-fördernden Faktoren. 
-        Werte oberhalb von 50 sprechen tendenziell für einen höheren Präsenzanteil, während niedrigere Werte auf eine stärkere Eignung für ortsunabhängiges Arbeiten hinweisen.
-        """)
         st.info("""
         Der Gesamtscore stellt keine absolute Bewertung dar, sondern dient als Orientierungswert innerhalb des entwickelten Bewertungsmodells.
 
