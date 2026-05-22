@@ -192,12 +192,14 @@ def model_from_score(score):
 def generate_interpretation(total_score, result, dimension_df):
     score = round(total_score, 1)
 
-    positive_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] > 0].sort_values(
+    INTERPRETATION_THRESHOLD = 1.0
+
+    positive_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] > INTERPRETATION_THRESHOLD].sort_values(
         by="Abweichungsbeitrag",
         ascending=False
     )
 
-    negative_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] < 0].sort_values(
+    negative_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] < -INTERPRETATION_THRESHOLD].sort_values(
         by="Abweichungsbeitrag",
         ascending=True
     )
@@ -295,6 +297,11 @@ st.info("Bewertungsskala: 1 = trifft gar nicht zu | 5 = trifft voll zu")
 
 start = st.button("➡️ Fragebogen starten")
 
+if st.session_state.get("reset_answers"):
+    for key in questions.keys():
+        st.session_state[key] = 3
+    st.session_state["reset_answers"] = False
+
 if start:
     st.session_state["started"] = True
 
@@ -323,7 +330,25 @@ if st.session_state.get("started"):
 
     st.markdown("---")
 
-    calculate = st.button("📊 Ergebnis berechnen")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        calculate = st.button(
+            "📊 Ergebnis berechnen",
+            key="calculate_button",
+            use_container_width=True
+        )
+
+    with col2:
+        reset = st.button(
+            "🔄 Antworten zurücksetzen",
+            key="reset_button",
+            use_container_width=True
+        )
+
+    if reset:
+        st.session_state["reset_answers"] = True
+        st.rerun()
 
     if calculate:
         total_score, question_df, dimension_df = calculate_scores(answers)
@@ -534,8 +559,10 @@ if st.session_state.get("started"):
 
         found_positive = False
 
+        RELEVANCE_THRESHOLD = 1.0
+
         for _, row in top_dimensions.iterrows():
-            if row["Abweichungsbeitrag"] > 0:
+            if row["Abweichungsbeitrag"] > RELEVANCE_THRESHOLD:
                 found_positive = True
                 st.write(
                     f"- **{row['Dimension']}** "
@@ -555,7 +582,7 @@ if st.session_state.get("started"):
         found_negative = False
 
         for _, row in reducing_dimensions.iterrows():
-            if row["Abweichungsbeitrag"] < 0:
+            if row["Abweichungsbeitrag"] < -RELEVANCE_THRESHOLD:
                 found_negative = True
                 st.write(
                     f"- **{row['Dimension']}** "
