@@ -1,5 +1,11 @@
 import streamlit as st
 import pandas as pd
+from io import BytesIO
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
 
 st.set_page_config(
     page_title="Bewertungsmodell Präsenzanteil",
@@ -8,6 +14,22 @@ st.set_page_config(
 )
 
 HELP_TEXT = "1 = trifft gar nicht zu | 5 = trifft voll zu"
+INTERPRETATION_THRESHOLD = 1.0
+
+
+def fmt_de(value, decimals=1):
+    return f"{value:.{decimals}f}".replace(".", ",")
+
+
+def format_display_df(df):
+    display_df = df.copy()
+
+    for col in ["Gewichtungsanteil (%)", "Abweichungsbeitrag", "Scorebeitrag"]:
+        if col in display_df.columns:
+            display_df[col] = display_df[col].apply(lambda x: fmt_de(float(x), 2))
+
+    return display_df
+
 
 criteria = {
     "k1": {"name": "Komplexität der Aufgaben", "relevance": 3.15217, "presence": 2.52174},
@@ -102,18 +124,22 @@ dimensions = {
     "Führung": ["q22", "q23"],
 }
 
+
 def criterion_weight(key):
     return criteria[key]["relevance"] * criteria[key]["presence"]
+
 
 def question_weight(question):
     weights = [criterion_weight(key) for key in question["criteria"]]
     return sum(weights) / len(weights)
+
 
 def signed_deviation(answer, direction):
     deviation = answer - 3
     if direction == "remote":
         deviation = deviation * -1
     return deviation
+
 
 def calculate_scores(answers):
     question_results = []
@@ -147,8 +173,10 @@ def calculate_scores(answers):
 
     question_df = pd.DataFrame(question_results)
 
+    dimension_order = list(dimensions.keys())
+
     dimension_df = (
-        question_df.groupby("Dimension")
+        question_df.groupby("Dimension", sort=False)
         .agg({
             "Gewichtungsanteil (%)": "sum",
             "Abweichungsbeitrag": "sum",
@@ -157,11 +185,20 @@ def calculate_scores(answers):
         .reset_index()
     )
 
+    dimension_df["Dimension"] = pd.Categorical(
+        dimension_df["Dimension"],
+        categories=dimension_order,
+        ordered=True
+    )
+
+    dimension_df = dimension_df.sort_values("Dimension").reset_index(drop=True)
+
     dimension_df["Gewichtungsanteil (%)"] = dimension_df["Gewichtungsanteil (%)"].round(2)
     dimension_df["Abweichungsbeitrag"] = dimension_df["Abweichungsbeitrag"].round(2)
     dimension_df["Scorebeitrag"] = dimension_df["Scorebeitrag"].round(2)
 
     return total_score, question_df, dimension_df
+
 
 def model_from_score(score):
     if score <= 25:
@@ -189,10 +226,9 @@ def model_from_score(score):
             "description": "Ein hoher Präsenzanteil ist sinnvoll, da die Team- und Arbeitsstruktur stark auf persönliche Zusammenarbeit angewiesen ist."
         }
 
-def generate_interpretation(total_score, result, dimension_df):
-    score = round(total_score, 1)
 
-    INTERPRETATION_THRESHOLD = 1.0
+def generate_interpretation(total_score, result, dimension_df):
+    score = fmt_de(total_score, 1)
 
     positive_dimensions = dimension_df[dimension_df["Abweichungsbeitrag"] > INTERPRETATION_THRESHOLD].sort_values(
         by="Abweichungsbeitrag",
@@ -204,8 +240,8 @@ def generate_interpretation(total_score, result, dimension_df):
         ascending=True
     )
 
-    strongest_positive = positive_dimensions.head(2)["Dimension"].tolist()
-    strongest_negative = negative_dimensions.head(2)["Dimension"].tolist()
+    strongest_positive = positive_dimensions.head(2)["Dimension"].astype(str).tolist()
+    strongest_negative = negative_dimensions.head(2)["Dimension"].astype(str).tolist()
 
     dimension_texts_positive = {
         "Aufgaben und Tätigkeiten": "Die arbeitsbezogenen Anforderungen sprechen in diesem Fall eher für persönliche Abstimmung und koordinierte Zusammenarbeit.",
@@ -265,7 +301,168 @@ def generate_interpretation(total_score, result, dimension_df):
         "Dagegen wurden Flexibilität, konzentrierte Einzelarbeit, Selbstorganisation und Ergebnisorientierung eher als Faktoren eingeordnet, die remote-fähige Arbeitsformen begünstigen."
     )
 
-    return "\n\n".join(interpretation)        
+    return "\n\n".join(interpretation)
+
+
+def create_result_pdf(total_score, result, dimension_df, interpretation_text):
+    buffer = BytesIO()
+
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=A4,
+        rightMargin=1.8 * cm,
+        leftMargin=1.8 * cm,
+        topMargin=1.8 * cm,
+        bottomMargin=1.8 * cm
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = styles["Title"]
+    title_style.fontSize = 20
+    title_style.leading = 24
+    title_style.textColor = colors.HexColor("#1f2937")
+
+    heading_style = styles["Heading2"]
+    heading_style.fontSize = 13
+    heading_style.textColor = colors.HexColor("#1f2937")
+    heading_style.spaceBefore = 10
+    heading_style.spaceAfter = 6
+
+    normal_style = styles["Normal"]
+    normal_style.fontSize = 9.5
+    normal_style.leading = 13
+
+    small_style = styles["Normal"]
+    small_style.fontSize = 8.5
+    small_style.leading = 11
+    small_style.textColor = colors.HexColor("#4b5563")
+
+    story = []
+
+    story.append(Paragraph("Ergebnisbericht", title_style))
+    story.append(Paragraph("Bewertungsmodell zur Bestimmung des optimalen Präsenzanteils", heading_style))
+    story.append(Spacer(1, 0.5 * cm))
+
+    score_table = Table(
+        [
+            ["Präsenz-Score", f"{fmt_de(total_score, 1)} / 100"],
+            ["Empfohlenes Arbeitsmodell", result["model"]],
+            ["Empfohlener Präsenzanteil", result["days"]],
+        ],
+        colWidths=[7 * cm, 8 * cm]
+    )
+
+    score_table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#f3f4f6")),
+        ("BOX", (0, 0), (-1, -1), 1.2, colors.HexColor("#22c55e")),
+        ("INNERGRID", (0, 0), (-1, -1), 0.3, colors.HexColor("#d1d5db")),
+        ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"),
+        ("FONTNAME", (1, 0), (1, -1), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, -1), 10),
+        ("TEXTCOLOR", (0, 0), (-1, -1), colors.HexColor("#111827")),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("TOPPADDING", (0, 0), (-1, -1), 9),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 9),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+    ]))
+
+    story.append(score_table)
+    story.append(Spacer(1, 0.6 * cm))
+
+    story.append(Paragraph("Kurzbeschreibung", heading_style))
+
+    description_box = Table(
+        [[Paragraph(result["description"], normal_style)]],
+        colWidths=[15 * cm]
+    )
+
+    description_box.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#ecfdf5")),
+        ("BOX", (0, 0), (-1, -1), 0.8, colors.HexColor("#86efac")),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+    ]))
+
+    story.append(description_box)
+    story.append(Spacer(1, 0.5 * cm))
+
+    story.append(Paragraph("Interpretation des Ergebnisses", heading_style))
+
+    for paragraph in interpretation_text.split("\n\n"):
+        story.append(Paragraph(paragraph, normal_style))
+        story.append(Spacer(1, 0.18 * cm))
+
+    story.append(Spacer(1, 0.3 * cm))
+
+    story.append(Paragraph("Wichtigste Einflussdimensionen", heading_style))
+
+    display_df = dimension_df.sort_values(
+        by="Abweichungsbeitrag",
+        key=lambda x: abs(x),
+        ascending=False
+    )
+
+    table_data = [["Dimension", "Gewichtung", "Abweichung", "Score"]]
+
+    for _, row in display_df.iterrows():
+        table_data.append([
+            Paragraph(str(row["Dimension"]), small_style),
+            f"{fmt_de(float(row['Gewichtungsanteil (%)']), 2)} %",
+            f"{fmt_de(float(row['Abweichungsbeitrag']), 2)}",
+            f"{fmt_de(float(row['Scorebeitrag']), 2)}",
+        ])
+
+    table = Table(
+        table_data,
+        colWidths=[7.0 * cm, 2.5 * cm, 2.5 * cm, 2.5 * cm],
+        repeatRows=1
+    )
+
+    table.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1f2937")),
+        ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("FONTSIZE", (0, 0), (-1, 0), 8.5),
+        ("BACKGROUND", (0, 1), (-1, -1), colors.HexColor("#f9fafb")),
+        ("GRID", (0, 0), (-1, -1), 0.35, colors.HexColor("#d1d5db")),
+        ("FONTSIZE", (0, 1), (-1, -1), 8),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 6),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("LEFTPADDING", (0, 0), (-1, -1), 7),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 7),
+    ]))
+
+    story.append(table)
+    story.append(Spacer(1, 0.5 * cm))
+
+    hint_box = Table(
+        [[Paragraph(
+            "Hinweis: Das Ergebnis dient als Orientierungshilfe und ersetzt keine unternehmens- oder teamspezifische Entscheidung.",
+            small_style
+        )]],
+        colWidths=[15 * cm]
+    )
+
+    hint_box.setStyle(TableStyle([
+        ("BACKGROUND", (0, 0), (-1, -1), colors.HexColor("#fefce8")),
+        ("BOX", (0, 0), (-1, -1), 0.8, colors.HexColor("#fde68a")),
+        ("LEFTPADDING", (0, 0), (-1, -1), 10),
+        ("RIGHTPADDING", (0, 0), (-1, -1), 10),
+        ("TOPPADDING", (0, 0), (-1, -1), 8),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
+    ]))
+
+    story.append(hint_box)
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer
+
 
 st.title("📊 Bewertungsmodell zur Bestimmung des optimalen Präsenzanteils")
 
@@ -310,6 +507,7 @@ if st.session_state.get("started"):
     st.warning("""
     Bitte beantworten Sie die Fragen aus Sicht der strukturellen Anforderungen Ihres Teams und nicht aus Sicht einzelner persönlicher Präferenzen.
     """)
+
     st.header("🧭 Kontextbasierte Leitfragen")
 
     answers = {}
@@ -373,7 +571,7 @@ if st.session_state.get("started"):
                     Ihr berechneter Präsenz-Score
                 </div>
                 <div style="font-size: 58px; font-weight: 700;">
-                    {score_rounded}
+                    {fmt_de(score_rounded, 1)}
                 </div>
                 <div style="font-size: 16px;">
                     von 100 Punkten
@@ -384,7 +582,7 @@ if st.session_state.get("started"):
         )
 
         st.progress(int(progress_value))
-        st.caption(f"Score: {score_rounded} / 100 Punkte")
+        st.caption(f"Score: {fmt_de(total_score, 1)} / 100 Punkte")
 
         st.markdown("### Einordnung des Ergebnisses")
 
@@ -410,11 +608,12 @@ if st.session_state.get("started"):
             justify-content: center;
             text-align: center;
             box-sizing: border-box;
+            margin-bottom: 12px;
         }
 
         .model-card-selected {
-            border: 2px solid #22c55e;
-            background-color: rgba(34, 197, 94, 0.12);
+            border: 2px solid #22c55e !important;
+            background-color: rgba(34, 197, 94, 0.12) !important;
         }
 
         .model-badge {
@@ -441,36 +640,27 @@ if st.session_state.get("started"):
             opacity: 0.85;
         }
 
-        /* Alle Info-Icons standardmäßig unsichtbar */
         .info-icon {
             position: absolute;
             top: 10px;
             right: 10px;
-
             width: 18px;
             height: 18px;
-
             border-radius: 50%;
             border: 1px solid rgba(151, 166, 195, 0.35);
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             font-size: 11px;
             font-weight: 600;
-
             color: rgba(250, 250, 250, 0.75);
             background-color: rgba(255,255,255,0.04);
-
             cursor: help;
             z-index: 2;
-
             opacity: 0;
             transition: opacity 0.2s ease;
         }
 
-        /* Erst sichtbar wenn man über die Box hovert */
         .model-card:hover .info-icon {
             opacity: 0.8;
         }
@@ -491,25 +681,6 @@ if st.session_state.get("started"):
             text-align: left;
             z-index: 9999;
             box-shadow: 0 4px 14px rgba(0,0,0,0.25);
-        }
-        .model-card {
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid rgba(128, 128, 128, 0.25);
-            background-color: rgba(128, 128, 128, 0.08);
-            min-height: 150px;
-            height: 150px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-            box-sizing: border-box;
-
-            margin-bottom: 12px;
-        }
-        .model-card.model-card-selected {
-            border: 2px solid #22c55e !important;
-            background-color: rgba(34, 197, 94, 0.12) !important;
         }
         </style>
         """, unsafe_allow_html=True)
@@ -540,6 +711,21 @@ if st.session_state.get("started"):
 
         st.markdown(interpretation_text)
 
+        pdf_buffer = create_result_pdf(
+            total_score,
+            result,
+            dimension_df,
+            interpretation_text
+        )
+
+        st.download_button(
+            label="📄 Ergebnis als PDF herunterladen",
+            data=pdf_buffer,
+            file_name=f"Bewertungsmodell_Ergebnis_{fmt_de(total_score, 1)}.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+
         st.info("""
         Hinweis: Das Ergebnis dient als Orientierungshilfe und ersetzt keine unternehmens- oder teamspezifische Entscheidung.
         """)
@@ -549,7 +735,7 @@ if st.session_state.get("started"):
         st.markdown("""
         Die folgenden Dimensionen zeigen, welche Bereiche den Score am stärksten erhöht oder reduziert haben.
         """)
-    
+
         st.subheader("Zentrale Treiber der Empfehlung")
 
         top_dimensions = dimension_df.sort_values(
@@ -559,14 +745,12 @@ if st.session_state.get("started"):
 
         found_positive = False
 
-        RELEVANCE_THRESHOLD = 1.0
-
         for _, row in top_dimensions.iterrows():
-            if row["Abweichungsbeitrag"] > RELEVANCE_THRESHOLD:
+            if row["Abweichungsbeitrag"] > INTERPRETATION_THRESHOLD:
                 found_positive = True
                 st.write(
                     f"- **{row['Dimension']}** "
-                    f"(+{round(row['Abweichungsbeitrag'], 2)} Punkte)"
+                    f"(+{fmt_de(float(row['Abweichungsbeitrag']), 2)} Punkte)"
                 )
 
         if not found_positive:
@@ -582,15 +766,19 @@ if st.session_state.get("started"):
         found_negative = False
 
         for _, row in reducing_dimensions.iterrows():
-            if row["Abweichungsbeitrag"] < -RELEVANCE_THRESHOLD:
+            if row["Abweichungsbeitrag"] < -INTERPRETATION_THRESHOLD:
                 found_negative = True
                 st.write(
                     f"- **{row['Dimension']}** "
-                    f"({round(row['Abweichungsbeitrag'], 2)} Punkte)"
+                    f"({fmt_de(float(row['Abweichungsbeitrag']), 2)} Punkte)"
                 )
 
         if not found_negative:
             st.write("Es wurden keine relevanten präsenzreduzierenden Faktoren identifiziert.")
+
+        st.info("""
+        Hinweis: Als zentrale Einflussdimensionen werden nur Beiträge mit einem Abweichungsbeitrag von mehr als ±1,0 Punkten ausgewiesen.
+        """)
 
         with st.expander("Details zur Berechnung anzeigen"):
             st.markdown("""
@@ -611,9 +799,10 @@ if st.session_state.get("started"):
 
             Remote-fördernde Faktoren werden dabei invers berücksichtigt.
             """)
+
             st.write("Die Tabelle zeigt die Berechnung je Leitfrage.")
 
-            st.dataframe(
+            question_display_df = format_display_df(
                 question_df[
                     [
                         "Dimension",
@@ -624,19 +813,23 @@ if st.session_state.get("started"):
                         "Abweichungsbeitrag",
                         "Scorebeitrag",
                     ]
-                ],
+                ]
+            )
+
+            st.dataframe(
+                question_display_df,
                 use_container_width=True,
                 hide_index=True
             )
 
             st.caption(
-                f"Summe Gewichtungsanteile: {round(question_df['Gewichtungsanteil (%)'].sum(), 1)} % | "
-                f"Summe Scorebeiträge: {round(question_df['Scorebeitrag'].sum(), 1)} Punkte"
+                f"Summe Gewichtungsanteile: {fmt_de(question_df['Gewichtungsanteil (%)'].sum(), 1)} % | "
+                f"Summe Scorebeiträge: {fmt_de(question_df['Scorebeitrag'].sum(), 1)} Punkte"
             )
 
             st.write("Die Tabelle zeigt die aggregierten Werte je Leitdimension.")
 
-            st.dataframe(
+            dimension_display_df = format_display_df(
                 dimension_df[
                     [
                         "Dimension",
@@ -644,15 +837,20 @@ if st.session_state.get("started"):
                         "Abweichungsbeitrag",
                         "Scorebeitrag",
                     ]
-                ],
+                ]
+            )
+
+            st.dataframe(
+                dimension_display_df,
                 use_container_width=True,
                 hide_index=True
             )
 
             st.caption(
-                f"Summe Gewichtungsanteile: {round(dimension_df['Gewichtungsanteil (%)'].sum(), 1)} % | "
-                f"Summe Scorebeiträge: {round(dimension_df['Scorebeitrag'].sum(), 1)} Punkte"
+                f"Summe Gewichtungsanteile: {fmt_de(dimension_df['Gewichtungsanteil (%)'].sum(), 1)} % | "
+                f"Summe Scorebeiträge: {fmt_de(dimension_df['Scorebeitrag'].sum(), 1)} Punkte"
             )
+
             st.markdown("""
             ### Hinweise zur Interpretation
 
@@ -665,8 +863,9 @@ if st.session_state.get("started"):
             - individuelle Teamkonstellationen
             - strategische Zielsetzungen
             """)
+
 st.markdown("---")
 
 st.caption("""
 Hinweis: Das Bewertungsmodell wurde im Rahmen einer wissenschaftlichen Masterarbeit entwickelt und dient ausschließlich als unterstützendes Entscheidungsinstrument für hybride Arbeitsmodelle.
-""")       
+""")  
