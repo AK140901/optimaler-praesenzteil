@@ -6,7 +6,8 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-import streamlit.components.v1 as components
+import streamlit as st
+from streamlit_analytics2 import StreamlitAnalytics
 
 st.set_page_config(
     page_title="Bewertungsmodell Präsenzanteil",
@@ -14,25 +15,12 @@ st.set_page_config(
     layout="wide"
 )
 
-GA_ID = "G-0RR1KND7FT"
+with StreamlitAnalytics(
+    tracking_id="G-0RR1KND7FT"
+):
 
-components.html(
-    f"""
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){{dataLayer.push(arguments);}}
-      gtag('js', new Date());
-
-      gtag('config', '{GA_ID}');
-    </script>
-    """,
-    height=1,
-)
-
-HELP_TEXT = "1 = trifft gar nicht zu | 5 = trifft voll zu"
-INTERPRETATION_THRESHOLD = 1.0
+    HELP_TEXT = "1 = trifft gar nicht zu | 5 = trifft voll zu"
+    INTERPRETATION_THRESHOLD = 1.0
 
 
 def fmt_de(value, decimals=1):
