@@ -28,7 +28,7 @@ components.html(
       gtag('config', '{GA_ID}');
     </script>
     """,
-    height=0,
+    height=1,
 )
 
 HELP_TEXT = "1 = trifft gar nicht zu | 5 = trifft voll zu"
