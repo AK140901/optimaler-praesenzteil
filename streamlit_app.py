@@ -6,11 +6,29 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
+import streamlit.components.v1 as components
 
 st.set_page_config(
     page_title="Bewertungsmodell Präsenzanteil",
     page_icon="📊",
     layout="wide"
+)
+
+GA_ID = "G-0RR1KND7FT"
+
+components.html(
+    f"""
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_ID}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){{dataLayer.push(arguments);}}
+      gtag('js', new Date());
+
+      gtag('config', '{GA_ID}');
+    </script>
+    """,
+    height=0,
 )
 
 HELP_TEXT = "1 = trifft gar nicht zu | 5 = trifft voll zu"
